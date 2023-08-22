@@ -104,7 +104,10 @@
         <p>&copy; 2023 Your Last.fm Stats</p>
     </footer>
     <script>
+   <script>
     const searchForm = document.getElementById('search-form');
+    const progressBar = document.getElementById('progress-bar');
+    const progressContainer = document.getElementById('progress-container');
 
     searchForm.addEventListener('submit', async function(event) {
         event.preventDefault();
@@ -116,39 +119,42 @@
         const topArtistsList = document.querySelector('.top-artists ol');
         const recentScrobblesList = document.querySelector('.recent-scrobbles ul');
 
-        // Clear previous data
-        topTracksList.innerHTML = '';
-        topArtistsList.innerHTML = '';
-        recentScrobblesList.innerHTML = '';
+        // Show progress bar
+        progressContainer.style.display = 'block';
+        progressBar.style.width = '0%';
 
         try {
-            // Fetch and display user stats using your preferred API or data source
+            // Fetch user stats and update UI
             const userStats = await fetchUserStats(username); // Replace with your API call
 
-            // Update the UI with user stats
-            // Loop through userStats and populate the lists with track, artist, and scrobble data
-            // Example:
-            for (const track of userStats.topTracks) {
-                const trackItem = document.createElement('li');
-                trackItem.innerHTML = `<span class="track-name">${track.name}</span>
-                                       <span class="artist-name">${track.artist}</span>
-                                       <span class="play-count">Play Count: ${track.playCount}</span>`;
-                topTracksList.appendChild(trackItem);
-            }
-
-            // Repeat the above loop for topArtists and recentScrobbles
+            // Update UI
 
         } catch (error) {
             console.error('Error fetching user stats:', error);
+        } finally {
+            // Hide progress bar
+            progressContainer.style.display = 'none';
         }
     });
 
     async function fetchUserStats(username) {
-        // Implement your API call here to fetch user stats from Last.fm or your data source
-        // Example:
-        const response = await fetch(`f300a77ab43d32535699e655d2208a86?username=${username}`);
-        const data = await response.json();
-        return data;
+        // ... your existing fetch code ...
+
+        // Update progress bar while fetching
+        const response = await fetch(`your_api_endpoint?username=${username}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            onDownloadProgress: function (progressEvent) {
+                const percentCompleted = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                progressBar.style.width = percentCompleted + '%';
+            }
+        });
+
+        // ... process and return data ...
+    }
+</script>
+
     }
 </script>
 
