@@ -35,44 +35,28 @@
       const map = L.map('map').setView([0, 0], 2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-      // Function to fetch artist info and update the map
-      function fetchArtistInfo(artistName) {
-        const lastfmUrl = `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${encodeURIComponent(artistName)}&api_key=${lastfmApiKey}&format=json`;
-        
-        // Step 1: Debug API call
-        console.log('Last.fm API Call:', lastfmUrl);
-
-        $.get(lastfmUrl)
-          .done(function(data) {
-            // Step 2: Inspect API response
-            console.log('Last.fm API Response:', data);
-
-            if (data.artist && data.artist.bio && data.artist.bio.placeformed) {
-              const placeformed = data.artist.bio.placeformed;
-              fetchLocationCoordinates(placeformed, artistName);
-            }
-          })
-          .fail(function(error) {
-            console.log('Last.fm API Error:', error);
-          });
-      }
-
       // Function to fetch location coordinates from MusicBrainz API
       function fetchLocationCoordinates(location, artistName) {
         const musicBrainzUrl = `https://musicbrainz.org/ws/2/place/?query=${encodeURIComponent(location)}&fmt=json`;
 
-        // Step 1: Debug API call
+        // Debug API call
         console.log('MusicBrainz API Call:', musicBrainzUrl);
 
         $.get(musicBrainzUrl)
           .done(function(data) {
-            // Step 2: Inspect API response
+            // Debug API response
             console.log('MusicBrainz API Response:', data);
 
             if (data.places && data.places.length > 0 && data.places[0].coordinates) {
               const lat = data.places[0].coordinates.latitude;
               const lon = data.places[0].coordinates.longitude;
-              addMarker(artistName, lat, lon);
+
+              // Highlight the current artist being scrobbled
+              if (artistName === currentScrobbledArtist) {
+                addMarker(artistName, lat, lon, 'yellow');
+              } else {
+                addMarker(artistName, lat, lon, 'red');
+              }
             }
           })
           .fail(function(error) {
@@ -81,24 +65,38 @@
       }
 
       // Function to add a marker to the map
-      function addMarker(artistName, lat, lon) {
-        L.marker([lat, lon]).addTo(map).bindPopup(artistName);
+      function addMarker(artistName, lat, lon, color) {
+        L.marker([lat, lon], { icon: createMarkerIcon(color) }).addTo(map).bindPopup(artistName);
+      }
+
+      // Function to create a custom marker icon
+      function createMarkerIcon(color) {
+        return L.icon({
+          iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+        });
       }
 
       // Function to handle search button click
       $('#searchButton').click(function() {
         lastfmUsername = $('#usernameInput').val();
         if (lastfmUsername) {
-          // Step 3: Fetch artist names from Last.fm
+          // Fetch all artists from Last.fm using your API
           // ...
 
           // For demonstration purposes, I'll add a static list of artists
           const artists = ['Artist1', 'Artist2', 'Artist3'];
           for (const artist of artists) {
-            fetchArtistInfo(artist);
+            fetchLocationCoordinates(artist.placeformed, artist.name);
           }
         }
       });
+
+      // For demonstration purposes, simulate the current scrobbled artist
+      const currentScrobbledArtist = 'CurrentArtist';
+      fetchLocationCoordinates('CurrentLocation', currentScrobbledArtist);
     });
   </script>
 </body>
