@@ -29,7 +29,6 @@
   <script>
     $(document).ready(function() {
       const musicBrainzApiKey = 'j_2HMyuPYrufr5ffSxT5LazxeX5l7hCL'; // Your MusicBrainz API key
-      let lastfmUsername = '';
 
       // Initialize an empty map
       const map = L.map('map').setView([0, 0], 2);
@@ -57,12 +56,7 @@
               const lat = data.places[0].coordinates.latitude;
               const lon = data.places[0].coordinates.longitude;
 
-              // Highlight the current artist being scrobbled
-              if (artistName === currentScrobbledArtist) {
-                addMarker(artistName, lat, lon, 'yellow');
-              } else {
-                addMarker(artistName, lat, lon, 'red');
-              }
+              addMarker(artistName, lat, lon);
             }
           })
           .fail(function(error) {
@@ -71,23 +65,13 @@
       }
 
       // Function to add a marker to the map
-      function addMarker(artistName, lat, lon, color) {
-        L.marker([lat, lon], { icon: createMarkerIcon(color) }).addTo(map).bindPopup(artistName);
-      }
-
-      // Function to create a custom marker icon
-      function createMarkerIcon(color) {
-        return L.icon({
-          iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-        });
+      function addMarker(artistName, lat, lon) {
+        L.marker([lat, lon]).addTo(map).bindPopup(artistName);
       }
 
       // Function to handle search button click
       $('#searchButton').click(function() {
-        lastfmUsername = $('#usernameInput').val();
+        const lastfmUsername = $('#usernameInput').val();
         if (lastfmUsername) {
           // Fetch all artists from Last.fm using your API
           // ...
@@ -103,10 +87,6 @@
           }
         }
       });
-
-      // For demonstration purposes, simulate the current scrobbled artist
-      const currentScrobbledArtist = 'CurrentArtist';
-      fetchLocationCoordinates('CurrentLocation', currentScrobbledArtist);
     });
   </script>
 </body>
