@@ -7,34 +7,10 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- ... your existing head content ... -->
-</head>
-<body>
     <div class="progress-container" id="progress-container">
         <div class="progress-bar" id="progress-bar"></div>
     </div>
     
-    <header>
-        <!-- ... your header content ... -->
-    </header>
-
-    <main>
-        <!-- ... your main content ... -->
-    </main>
-
-    <footer>
-        <!-- ... your footer content ... -->
-    </footer>
-
-    <script>
-        // ... your existing JavaScript code ...
-    </script>
-</body>
-</html>
-
     <header>
         <h1>Your Last.fm Stats</h1>
         <nav>
@@ -48,116 +24,95 @@
     </header>
 
     <main>
+        <section class="search-section">
+            <h2>Search for Last.fm User Stats</h2>
+            <form id="search-form">
+                <label for="username">Last.fm Username:</label>
+                <input type="text" id="username" name="username" required>
+                <button type="submit">Search</button>
+            </form>
+        </section>
+
         <section class="top-tracks">
             <h2>Top Tracks</h2>
             <ol>
-                <li>
-                    <span class="track-name">Track 1 Name</span>
-                    <span class="artist-name">Artist 1 Name</span>
-                    <span class="play-count">Play Count: 100</span>
-                </li>
-                <!-- Repeat the above li structure for each top track -->
+                <!-- Top tracks will be populated dynamically by JavaScript -->
             </ol>
         </section>
 
         <section class="top-artists">
             <h2>Top Artists</h2>
             <ol>
-                <li>
-                    <span class="artist-name">Artist 1 Name</span>
-                    <span class="play-count">Play Count: 200</span>
-                </li>
-                <!-- Repeat the above li structure for each top artist -->
+                <!-- Top artists will be populated dynamically by JavaScript -->
             </ol>
         </section>
 
         <section class="recent-scrobbles">
             <h2>Recent Scrobbles</h2>
             <ul>
-                <li>
-                    <span class="track-name">Track 1 Name</span>
-                    <span class="artist-name">Artist 1 Name</span>
-                    <span class="timestamp">Timestamp: YYYY-MM-DD HH:MM</span>
-                </li>
-                <!-- Repeat the above li structure for each recent scrobble -->
+                <!-- Recent scrobbles will be populated dynamically by JavaScript -->
             </ul>
         </section>
     </main>
-<!-- ... your existing HTML code ... -->
-
-<main>
-    <section class="search-section">
-        <h2>Search for Last.fm User Stats</h2>
-        <form id="search-form">
-            <label for="username">Last.fm Username:</label>
-            <input type="text" id="username" name="username" required>
-            <button type="submit">Search</button>
-        </form>
-    </section>
-
-    <!-- ... rest of your sections ... -->
-</main>
-
-<!-- ... your existing HTML code ... -->
 
     <footer>
         <p>&copy; 2023 Your Last.fm Stats</p>
     </footer>
+
     <script>
-   <script>
-    const searchForm = document.getElementById('search-form');
-    const progressBar = document.getElementById('progress-bar');
-    const progressContainer = document.getElementById('progress-container');
+        const searchForm = document.getElementById('search-form');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const apiKey = 'f300a77ab43d32535699e655d2208a86'; // Your Last.fm API key
 
-    searchForm.addEventListener('submit', async function(event) {
-        event.preventDefault();
+        searchForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
 
-        const usernameInput = document.getElementById('username');
-        const username = usernameInput.value;
+            const usernameInput = document.getElementById('username');
+            const username = usernameInput.value;
 
-        const topTracksList = document.querySelector('.top-tracks ol');
-        const topArtistsList = document.querySelector('.top-artists ol');
-        const recentScrobblesList = document.querySelector('.recent-scrobbles ul');
+            const topTracksList = document.querySelector('.top-tracks ol');
+            const topArtistsList = document.querySelector('.top-artists ol');
+            const recentScrobblesList = document.querySelector('.recent-scrobbles ul');
 
-        // Show progress bar
-        progressContainer.style.display = 'block';
-        progressBar.style.width = '0%';
+            // Show progress bar
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
 
-        try {
-            // Fetch user stats and update UI
-            const userStats = await fetchUserStats(username); // Replace with your API call
+            try {
+                // Fetch user stats and update UI
+                const userStats = await fetchUserStats(username); // Replace with your API call
 
-            // Update UI
+                // Update UI
+                // ...
 
-        } catch (error) {
-            console.error('Error fetching user stats:', error);
-        } finally {
-            // Hide progress bar
-            progressContainer.style.display = 'none';
-        }
-    });
-
-    async function fetchUserStats(username) {
-        // ... your existing fetch code ...
-
-        // Update progress bar while fetching
-        const response = await fetch(`f300a77ab43d32535699e655d2208a86?username=${username}`, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            onDownloadProgress: function (progressEvent) {
-                const percentCompleted = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                progressBar.style.width = percentCompleted + '%';
+            } catch (error) {
+                console.error('Error fetching user stats:', error);
+            } finally {
+                // Hide progress bar
+                progressContainer.style.display = 'none';
             }
         });
 
-        // ... process and return data ...
-    }
-</script>
+        async function fetchUserStats(username) {
+            // Construct the API URL with your API key
+            const apiEndpoint = `https://ws.audioscrobbler.com/2.0/?method=user.getinfo&user=${username}&api_key=${apiKey}&format=json`;
 
-    }
-</script>
+            // Fetch user stats
+            const response = await fetch(apiEndpoint, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                onDownloadProgress: function (progressEvent) {
+                    const percentCompleted = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                    progressBar.style.width = percentCompleted + '%';
+                }
+            });
 
+            // Parse and return data
+            const data = await response.json();
+            return data;
+        }
+    </script>
 </body>
-
 </html>
