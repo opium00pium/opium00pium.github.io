@@ -81,7 +81,7 @@
 
             try {
                 // Fetch user stats and update UI
-                const userStats = await fetchUserStats(username); // Replace with your API call
+                const userStats = await fetchUserStats(username);
 
                 // Update UI
                 // ...
@@ -95,10 +95,8 @@
         });
 
         async function fetchUserStats(username) {
-            // Construct the API URL with your API key
             const apiEndpoint = `https://ws.audioscrobbler.com/2.0/?method=user.getinfo&user=${username}&api_key=${apiKey}&format=json`;
 
-            // Fetch user stats
             const response = await fetch(apiEndpoint, {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -109,7 +107,6 @@
                 }
             });
 
-            // Parse and return data
             const data = await response.json();
             return data;
         }
