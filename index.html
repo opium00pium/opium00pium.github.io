@@ -39,25 +39,45 @@
       function fetchArtistInfo(artistName) {
         const lastfmUrl = `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${encodeURIComponent(artistName)}&api_key=${lastfmApiKey}&format=json`;
         
-        $.get(lastfmUrl, function(data) {
-          if (data.artist && data.artist.bio && data.artist.bio.placeformed) {
-            const placeformed = data.artist.bio.placeformed;
-            fetchLocationCoordinates(placeformed, artistName);
-          }
-        });
+        // Step 1: Debug API call
+        console.log('Last.fm API Call:', lastfmUrl);
+
+        $.get(lastfmUrl)
+          .done(function(data) {
+            // Step 2: Inspect API response
+            console.log('Last.fm API Response:', data);
+
+            if (data.artist && data.artist.bio && data.artist.bio.placeformed) {
+              const placeformed = data.artist.bio.placeformed;
+              fetchLocationCoordinates(placeformed, artistName);
+            }
+          })
+          .fail(function(error) {
+            console.log('Last.fm API Error:', error);
+          });
       }
 
       // Function to fetch location coordinates from MusicBrainz API
       function fetchLocationCoordinates(location, artistName) {
         const musicBrainzUrl = `https://musicbrainz.org/ws/2/place/?query=${encodeURIComponent(location)}&fmt=json`;
 
-        $.get(musicBrainzUrl, function(data) {
-          if (data.places && data.places.length > 0 && data.places[0].coordinates) {
-            const lat = data.places[0].coordinates.latitude;
-            const lon = data.places[0].coordinates.longitude;
-            addMarker(artistName, lat, lon);
-          }
-        });
+        // Step 1: Debug API call
+        console.log('MusicBrainz API Call:', musicBrainzUrl);
+
+        $.get(musicBrainzUrl)
+          .done(function(data) {
+            // Step 2: Inspect API response
+            console.log('MusicBrainz API Response:', data);
+
+            if (data.places && data.places.length > 0 && data.places[0].coordinates) {
+              const lat = data.places[0].coordinates.latitude;
+              const lon = data.places[0].coordinates.longitude;
+              addMarker(artistName, lat, lon);
+            }
+          })
+          .fail(function(error) {
+            console.log('MusicBrainz API Error:', error);
+          });
       }
 
       // Function to add a marker to the map
@@ -69,7 +89,7 @@
       $('#searchButton').click(function() {
         lastfmUsername = $('#usernameInput').val();
         if (lastfmUsername) {
-          // You need to add your Last.fm API call here to get the artist names
+          // Step 3: Fetch artist names from Last.fm
           // ...
 
           // For demonstration purposes, I'll add a static list of artists
