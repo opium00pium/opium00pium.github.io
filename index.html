@@ -28,7 +28,7 @@
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
   <script>
     $(document).ready(function() {
-      const lastfmApiKey = 'f300a77ab43d32535699e655d2208a86';
+      const musicBrainzApiKey = 'j_2HMyuPYrufr5ffSxT5LazxeX5l7hCL'; // Your MusicBrainz API key
       let lastfmUsername = '';
 
       // Initialize an empty map
@@ -42,7 +42,13 @@
         // Debug API call
         console.log('MusicBrainz API Call:', musicBrainzUrl);
 
-        $.get(musicBrainzUrl)
+        $.ajax({
+          url: musicBrainzUrl,
+          headers: {
+            'User-Agent': 'YourApp/1.0.0 (contact@example.com)', // Replace with your app's user agent
+            'Authorization': `Bearer ${musicBrainzApiKey}`
+          }
+        })
           .done(function(data) {
             // Debug API response
             console.log('MusicBrainz API Response:', data);
@@ -87,7 +93,11 @@
           // ...
 
           // For demonstration purposes, I'll add a static list of artists
-          const artists = ['Artist1', 'Artist2', 'Artist3'];
+          const artists = [
+            { name: 'Artist1', placeformed: 'Birthplace1' },
+            { name: 'Artist2', placeformed: 'Birthplace2' },
+            { name: 'Artist3', placeformed: 'Birthplace3' }
+          ];
           for (const artist of artists) {
             fetchLocationCoordinates(artist.placeformed, artist.name);
           }
