@@ -66,6 +66,13 @@
           $.get(apiUrl, function(data) {
             const artists = data.topartists.artist;
 
+            // Clear existing markers from the map
+            map.eachLayer(layer => {
+              if (layer instanceof L.Marker) {
+                map.removeLayer(layer);
+              }
+            });
+
             for (const artist of artists) {
               fetchArtistInfo(artist.name);
             }
