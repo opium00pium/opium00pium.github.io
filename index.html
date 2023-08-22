@@ -35,8 +35,50 @@
       const map = L.map('map').setView([0, 0], 2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-      // Rest of your code remains the same
-      // ...
+      // Function to fetch artist info and update the map
+      function fetchArtistInfo(artistName) {
+        const lastfmUrl = `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${encodeURIComponent(artistName)}&api_key=${lastfmApiKey}&format=json`;
+        
+        $.get(lastfmUrl, function(data) {
+          if (data.artist && data.artist.bio && data.artist.bio.placeformed) {
+            const placeformed = data.artist.bio.placeformed;
+            fetchLocationCoordinates(placeformed, artistName);
+          }
+        });
+      }
+
+      // Function to fetch location coordinates from MusicBrainz API
+      function fetchLocationCoordinates(location, artistName) {
+        const musicBrainzUrl = `https://musicbrainz.org/ws/2/place/?query=${encodeURIComponent(location)}&fmt=json`;
+
+        $.get(musicBrainzUrl, function(data) {
+          if (data.places && data.places.length > 0 && data.places[0].coordinates) {
+            const lat = data.places[0].coordinates.latitude;
+            const lon = data.places[0].coordinates.longitude;
+            addMarker(artistName, lat, lon);
+          }
+        });
+      }
+
+      // Function to add a marker to the map
+      function addMarker(artistName, lat, lon) {
+        L.marker([lat, lon]).addTo(map).bindPopup(artistName);
+      }
+
+      // Function to handle search button click
+      $('#searchButton').click(function() {
+        lastfmUsername = $('#usernameInput').val();
+        if (lastfmUsername) {
+          // You need to add your Last.fm API call here to get the artist names
+          // ...
+
+          // For demonstration purposes, I'll add a static list of artists
+          const artists = ['Artist1', 'Artist2', 'Artist3'];
+          for (const artist of artists) {
+            fetchArtistInfo(artist);
+          }
+        }
+      });
     });
   </script>
 </body>
