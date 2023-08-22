@@ -26,7 +26,9 @@
       const lastfmApiKey = 'f300a77ab43d32535699e655d2208a86';
       let lastfmUsername = '';
 
-      const apiUrl = `https://ws.audioscrobbler.com/2.0/?method=user.getTopArtists&user=${lastfmUsername}&api_key=${lastfmApiKey}&format=json`;
+      // Initialize an empty map
+      const map = L.map('map').setView([0, 0], 2);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
       // Update the API call based on the selected username
       function updateApiUrl(username) {
@@ -40,9 +42,6 @@
         $.get(musicBrainzUrl, function(data) {
           if (data.artists.length > 0) {
             const artist = data.artists[0];
-
-            const map = L.map('map').setView([0, 0], 2);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
             function addMarker(artistName, lat, lon) {
               const marker = L.marker([lat, lon]).addTo(map);
@@ -62,7 +61,7 @@
       $('#searchButton').click(function() {
         lastfmUsername = $('#usernameInput').val();
         if (lastfmUsername) {
-          apiUrl = updateApiUrl(lastfmUsername);
+          const apiUrl = updateApiUrl(lastfmUsername);
 
           $.get(apiUrl, function(data) {
             const artists = data.topartists.artist;
