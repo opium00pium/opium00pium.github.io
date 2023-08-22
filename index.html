@@ -74,20 +74,22 @@
         const lastfmUsername = $('#usernameInput').val();
         if (lastfmUsername) {
           // Fetch all artists from Last.fm using your API
-          // ...
-
-          // For demonstration purposes, I'll add a static list of artists
-          const artists = [
-            { name: 'Artist1', placeformed: 'Birthplace1' },
-            { name: 'Artist2', placeformed: 'Birthplace2' },
-            { name: 'Artist3', placeformed: 'Birthplace3' }
-          ];
-          for (const artist of artists) {
-            fetchLocationCoordinates(artist.placeformed, artist.name);
-          }
+          $.ajax({
+            url: `https://ws.audioscrobbler.com/2.0/?method=user.getTopArtists&user=${lastfmUsername}&api_key=${musicBrainzApiKey}&format=json`,
+            success: function(data) {
+              const artists = data.topartists.artist;
+              for (const artist of artists) {
+                fetchLocationCoordinates(artist.name, artist.name);
+              }
+            },
+            error: function(error) {
+              console.log('Last.fm API Error:', error);
+            }
+          });
         }
       });
     });
   </script>
 </body>
 </html>
+>
