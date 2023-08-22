@@ -10,6 +10,13 @@
 </head>
 <body>
   <h1>Last.fm Scrobbled Artists Map</h1>
+  
+  <!-- Add the input field and search button -->
+  <div>
+    <input type="text" id="usernameInput" placeholder="Enter Last.fm username">
+    <button id="searchButton">Search</button>
+  </div>
+
   <div id="map"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -17,39 +24,53 @@
   <script>
     $(document).ready(function() {
       const lastfmApiKey = 'YOUR_LASTFM_API_KEY';
-      const lastfmUsername = 'USER_USERNAME';
+      let lastfmUsername = '';
 
       const apiUrl = `https://ws.audioscrobbler.com/2.0/?method=user.getTopArtists&user=${lastfmUsername}&api_key=${lastfmApiKey}&format=json`;
 
-      $.get(apiUrl, function(data) {
-        const artists = data.topartists.artist;
+      // Update the API call based on the selected username
+      function updateApiUrl(username) {
+        return `https://ws.audioscrobbler.com/2.0/?method=user.getTopArtists&user=${username}&api_key=${lastfmApiKey}&format=json`;
+      }
 
-        function fetchArtistInfo(artistName) {
-          const musicBrainzUrl = `https://musicbrainz.org/ws/2/artist/?query=${encodeURIComponent(artistName)}&fmt=json`;
+      // Function to fetch artist info and update the map
+      function fetchArtistInfo(artistName) {
+        const musicBrainzUrl = `https://musicbrainz.org/ws/2/artist/?query=${encodeURIComponent(artistName)}&fmt=json`;
 
-          $.get(musicBrainzUrl, function(data) {
-            if (data.artists.length > 0) {
-              const artist = data.artists[0];
+        $.get(musicBrainzUrl, function(data) {
+          if (data.artists.length > 0) {
+            const artist = data.artists[0];
 
-              const map = L.map('map').setView([0, 0], 2);
-              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            const map = L.map('map').setView([0, 0], 2);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-              function addMarker(artistName, lat, lon) {
-                const marker = L.marker([lat, lon]).addTo(map);
-                marker.bindPopup(artistName);
-              }
+            function addMarker(artistName, lat, lon) {
+              const marker = L.marker([lat, lon]).addTo(map);
+              marker.bindPopup(artistName);
+            }
 
-              if (artist.begin_area) {
-                const lat = artist.begin_area.coordinates.latitude;
-                const lon = artist.begin_area.coordinates.longitude;
-                addMarker(artist.name, lat, lon);
-              }
+            if (artist.begin_area) {
+              const lat = artist.begin_area.coordinates.latitude;
+              const lon = artist.begin_area.coordinates.longitude;
+              addMarker(artist.name, lat, lon);
+            }
+          }
+        });
+      }
+
+      // Function to handle search button click
+      $('#searchButton').click(function() {
+        lastfmUsername = $('#usernameInput').val();
+        if (lastfmUsername) {
+          apiUrl = updateApiUrl(lastfmUsername);
+
+          $.get(apiUrl, function(data) {
+            const artists = data.topartists.artist;
+
+            for (const artist of artists) {
+              fetchArtistInfo(artist.name);
             }
           });
-        }
-
-        for (const artist of artists) {
-          fetchArtistInfo(artist.name);
         }
       });
     });
