@@ -1,0 +1,72 @@
+/* Reset some default styles */
+body, h1, h2, ul, ol, li, p {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.top-tracks, .top-artists, .recent-scrobbles {
+    margin-bottom: 40px;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+li {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    background-color: white;
+}
+
+.play-count, .timestamp {
+    color: #999;
+    font-size: 14px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #f8f8f8;
+    border-top: 1px solid #ddd;
+}
+
+/* Add more styles as needed */
