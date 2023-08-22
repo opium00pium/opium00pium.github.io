@@ -8,10 +8,6 @@
   <!-- Add Leaflet CSS link here -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 
-  <!-- jQuery and Leaflet JS should be loaded after Leaflet CSS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://leafletjs.com/examples/quick-start/leaflet.js"></script>
-
   <style>
     /* Add your CSS styles here */
   </style>
@@ -25,8 +21,11 @@
     <button id="searchButton">Search</button>
   </div>
 
-  <div id="map"></div>
+  <div id="map" style="width: 100%; height: 400px;"></div>
 
+  <!-- Load Leaflet JS after jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
   <script>
     $(document).ready(function() {
       const lastfmApiKey = 'f300a77ab43d32535699e655d2208a86';
